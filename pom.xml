@@ -29,20 +29,14 @@
         <mapper.starter.version>2.0.2</mapper.starter.version>
 
         <mybatis.starter.version>1.3.2</mybatis.starter.version>
-        <jjwt.version>0.7.0</jjwt.version>
-        <joda-time.version>2.9.6</joda-time.version>
+
     </properties>
 
 
     <!-- dependencyManagement只是用于限定子项目的jar包的版本，不做实际导包操作   -->
     <dependencies>
 
-        <!--jwt-->
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt</artifactId>
-            <version>${jjwt.version}</version>
-        </dependency>
+
         <!-- https://mvnrepository.com/artifact/joda-time/joda-time -->
         <dependency>
             <groupId>joda-time</groupId>

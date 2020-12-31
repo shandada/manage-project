@@ -1,8 +1,7 @@
 package com.service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ceph.MyCeph;
-import com.ceph.utils.CephUtils;
+
 import com.pojo.Manage;
 import com.mapper.ManageMapper;
 import com.sun.xml.internal.bind.v2.TODO;

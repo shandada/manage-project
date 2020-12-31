@@ -9,6 +9,8 @@ import com.pojo.FileName;
 import com.pojo.Versions;
 import com.vo.Result;
 import org.springframework.stereotype.Service;
+import com.ceph.MyCeph;
+import com.ceph.utils.CephUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -30,7 +32,11 @@ import java.util.UUID;
 @Service
 @Transactional
 public class FileNameService extends ServiceImpl<FileNameMapper, FileName> {
-
+    /**
+     * 客户端,ip,秘钥
+     */
+    //TODO  ceph
+//    public MyCeph cephUtils = new CephUtils("admin", "192.168.1.13:6789", "198.162.1.1.2");
 
     HttpSession session;
     //注入文件mapper
@@ -53,12 +59,6 @@ public class FileNameService extends ServiceImpl<FileNameMapper, FileName> {
         return list;
     }
 
-
-    //TODO  ceph
-    /**
-     * 客户端,ip,秘钥
-     */
-//    public MyCeph cephUtils = new CephUtils("admin", "192.168.1.13:6789", "198.162.1.1.2");
 
     /**
      * 根据id单个文件夹删除
@@ -108,14 +108,14 @@ public class FileNameService extends ServiceImpl<FileNameMapper, FileName> {
         String file = "D:\\work\\2020-12-09\\manage\\src\\main\\resources\\static\\manage\\";
 
         //TODO  文件上传
-        //byte[] readFile(String fileName); ceph上传
+//        byte[] readFile(String fileName); ceph上传
 //        cephUtils.readFile(file);
         //file文件
         File folder = new File(file);
 
 //        //文件大小
-        String length = folder.length()+"KB";
-        System.out.println("文件" + file + "的大小是：" + length+"\n");
+        String length = folder.length() + "KB";
+        System.out.println("文件" + file + "的大小是：" + length + "\n");
 
         //判断文件目录是否存在
         if (!folder.isDirectory()) {
@@ -153,9 +153,8 @@ public class FileNameService extends ServiceImpl<FileNameMapper, FileName> {
         byte[] buf = new byte[1024];
         int len = 0;
         while ((len = fis.read(buf)) != -1) {
-            //TODO  文件下载
-            // void writeFile(String fileName, byte[] file);
-//            cephUtils.writeFile("", buf);
+            //TODO  文件下载 // void writeFile(String fileName, byte[] file);
+//            cephUtils.writeFile(file.getName(), buf);
             //写入
             os.write(buf, 0, len);
         }
@@ -163,5 +162,6 @@ public class FileNameService extends ServiceImpl<FileNameMapper, FileName> {
         fis.close();
         return Result.ok().message("下载成功!");
     }
+
 
 }
