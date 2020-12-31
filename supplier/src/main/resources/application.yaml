@@ -1,0 +1,9 @@
+server:
+  port: 10800   #端口号
+spring:
+  datasource:      #连接数据库配置
+    url: jdbc:mysql://localhost:3306/file_management?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
+
