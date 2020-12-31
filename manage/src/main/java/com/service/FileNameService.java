@@ -7,17 +7,23 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mapper.VersionsMapper;
 import com.pojo.FileName;
 import com.pojo.Versions;
+import com.util.FileUtil;
 import com.vo.Result;
 import org.springframework.stereotype.Service;
 import com.ceph.MyCeph;
 import com.ceph.utils.CephUtils;
 
+import javax.activation.MimetypesFileTypeMap;
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.mapper.FileNameMapper;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -38,7 +44,10 @@ public class FileNameService extends ServiceImpl<FileNameMapper, FileName> {
     //TODO  ceph
 //    public MyCeph cephUtils = new CephUtils("admin", "192.168.1.13:6789", "198.162.1.1.2");
 
-    HttpSession session;
+//注入session
+    @Resource
+    private HttpSession session;
+
     //注入文件mapper
     @Resource
     private FileNameMapper fileNameMapper;
@@ -101,15 +110,19 @@ public class FileNameService extends ServiceImpl<FileNameMapper, FileName> {
      * @return
      */
     public void upload(MultipartFile uploadFile) throws IOException {
-        //上传时,获取地址,加到数据库
 
+        //根据添加获取文件name url
+        String name = (String) session.getAttribute("name");
+        String url = (String) session.getAttribute("url");
+        System.out.println(name);
+        System.out.println(url);
 
         //file 这里是上传到服务器的路径
         String file = "D:\\work\\2020-12-09\\manage\\src\\main\\resources\\static\\manage\\";
 
         //TODO  文件上传
 //        byte[] readFile(String fileName); ceph上传
-//        cephUtils.readFile(file);
+//        cephUtils.readFile(name);
         //file文件
         File folder = new File(file);
 
@@ -136,13 +149,20 @@ public class FileNameService extends ServiceImpl<FileNameMapper, FileName> {
     }
 
     /***
-     * 文件下载   目前仅限于下载pdf格式
+     * 文件下载 1.0  目前仅限于下载pdf格式
      * @param response
      * @throws Exception
      */
-    public Result download(HttpServletResponse response) throws Exception {
+    public Result download(HttpServletResponse response, Integer handleId) throws Exception {
+
+        //根据id获取服务器文件url
+        FileName fileName1 = fileNameMapper.selectById(handleId);
+        String handleUrl = fileName1.getHandleIp();
+        String handleName = fileName1.getHandleName();
+
         // 文件地址，真实环境是存放在服务器中的
-        File file = new File("D:\\a.pdf");
+//        File file = new File("D:\\file\\a.pdf");
+        File file = new File(handleUrl);
         // 穿件输入对象
         FileInputStream fis = new FileInputStream(file);
         // 设置相关格式
@@ -161,6 +181,39 @@ public class FileNameService extends ServiceImpl<FileNameMapper, FileName> {
         //关闭
         fis.close();
         return Result.ok().message("下载成功!");
+    }
+
+
+    /***
+     * 文件下载 2.0
+     * @param
+     * @throws Exception
+     */
+
+    public void download2(@PathVariable("handleId") Integer handleId, HttpServletRequest request) throws IOException {
+        //根据id获取服务器文件url
+        FileName fileName1 = fileNameMapper.selectById(handleId);
+        String handleUrl = fileName1.getHandleIp();
+
+        //name存储到session,下载时获取文件名称
+        request.getSession().setAttribute("handleName", fileName1.getHandleName());
+        //url存储到session,下载时获取文件后缀名
+        request.getSession().setAttribute("handleUrl", fileName1.getHandleIp());
+        System.out.println("handleName: " + fileName1.getHandleName());
+        System.out.println("handleUrl: " + fileName1.getHandleIp());
+
+        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletResponse response = requestAttributes.getResponse();
+        // 设置信息给客户端不解析
+        String type = new MimetypesFileTypeMap().getContentType(handleUrl);
+        // 设置contenttype，即告诉客户端所发送的数据属于什么类型
+        response.setHeader("Content-type", type);
+        // 设置编码
+        String hehe = new String(handleUrl.getBytes("utf-8"), "iso-8859-1");
+
+        // 设置扩展头，当Content-Type 的类型为要下载的类型时 , 这个信息头会告诉浏览器这个文件的名字和类型。
+        response.setHeader("Content-Disposition", "attachment;filename=" + hehe);
+        FileUtil.download(handleUrl, response, request);
     }
 
 

@@ -1,21 +1,31 @@
 package com.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.ceph.MyCeph;
+import com.ceph.utils.CephUtils;
 import com.pojo.*;
 import com.pojo.FileName;
 import com.service.FileNameService;
 import com.service.ManagerService;
 import com.service.SupplierService;
 import com.service.VersionsService;
+import com.util.FileUtil;
 import com.vo.Result;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.activation.MimetypesFileTypeMap;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,10 +39,15 @@ import java.util.UUID;
 @RequestMapping("/fileName")
 public class FileNameController {
 
-    //注入session
-//    @Resource
-    HttpSession session;
+    /**
+     * 客户端,ip,秘钥
+     */
+    //TODO  ceph
+//    public MyCeph cephUtils = new CephUtils("admin", "192.168.1.13:6789", "198.162.1.1.2");
 
+    //注入session
+    @Resource
+    private HttpSession session;
     //注入文件夹service
     @Resource
     private ManagerService managerService;
@@ -93,18 +108,23 @@ public class FileNameController {
      * @param fileName
      * @return
      */
+
     @PostMapping("/created")
-    public Result created(@RequestBody FileName fileName, MultipartFile uploadFile) {
+    public Result created(@RequestBody FileName fileName, MultipartFile uploadFile, HttpServletRequest request) {
         try {
-            // 创建文件信息时,存储信息到session
-//            session.setAttribute("files", fileName);
+
+            //创建获取session对象
+            HttpSession session = request.getSession();
+            //保存session中数据
+            // 文件名称
+            session.setAttribute("name", fileName.getHandleName());
+            //文件路径
+            session.setAttribute("url", fileName.getHandleIp());
+
 
             //添加文件信息
             fileNameService.save(fileName);
-            //上传文件
-            fileNameService.upload(uploadFile);
-
-
+//            fileNameService.upload(uploadFile);
             //添加版本号,判断接收的版本号是否为空 不为空则执行if
             if (fileName.getVersionsIDs() != null) {
                 //获取版本号id
@@ -118,11 +138,16 @@ public class FileNameController {
                     versionsService.save(versions1);
                 }
             }
+            //TODO  文件上传
+//        byte[] readFile(String fileName); ceph上传
+//            cephUtils.readFile(fileName.getHandleName());
             return Result.ok().message("添加成功");
-        } catch (Exception e) {
+        } catch (
+                Exception e) {
             e.printStackTrace();
             return Result.error();
         }
+
     }
 
 
@@ -249,12 +274,28 @@ public class FileNameController {
     }
 
     /***
-     * 文件下载   目前仅限于下载pdf格式
+     * 文件下载 1.0  目前仅限于下载pdf格式
      * @param response
      * @throws Exception
      */
-    @GetMapping("/downFile")
-    public Result download(HttpServletResponse response) throws Exception {
-        return fileNameService.download(response);
+    @GetMapping("/download/{handleId}")
+    public Result download(HttpServletResponse response, @PathVariable("handleId") Integer handleId) throws Exception {
+        return fileNameService.download(response, handleId);
+    }
+
+    /***
+     * 文件下载 2.0  目前仅限于下载pdf格式
+     * @param
+     * @throws Exception
+     */
+    @GetMapping(value = "/downFile/{handleId}")
+    public Result download(@PathVariable("handleId") Integer handleId, HttpServletRequest request) throws IOException {
+        try {
+            fileNameService.download2(handleId, request);
+            return Result.ok().message("下载成功!");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return Result.ok().message("下载失败!");
+        }
     }
 }
