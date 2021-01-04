@@ -18,7 +18,7 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
     /**
      * 创建填充createTime 创建时间,updateTime修改时间
      * *创建和修改时间都有
-     *a
+     *
      * @param metaObject
      */
     @Override
