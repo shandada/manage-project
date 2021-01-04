@@ -274,7 +274,7 @@ public class FileNameController {
     }
 
     /***
-     * 文件下载 1.0  目前仅限于下载pdf格式
+     * 文件下载 1.0  目前仅限于下载pdf格式.
      * @param response
      * @throws Exception
      */
