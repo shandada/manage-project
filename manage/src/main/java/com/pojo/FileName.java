@@ -52,6 +52,10 @@ public class FileName {
      */
     private Integer vid;
     /**
+     * 类型
+     */
+    private String type;
+    /**
      * 创建时间
      */
     @TableField(value = "create_time", fill = FieldFill.INSERT)
@@ -74,5 +78,5 @@ public class FileName {
     //接收 版本号 id字符串
     @TableField(exist = false)
     //["1.1.1","1.1.2","1.1.3"];
-        private String versionsIDs;
+    private String versionsIDs;
 }
