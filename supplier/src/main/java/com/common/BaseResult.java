@@ -1,30 +1,23 @@
 package com.common;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
 /**
 
  * 返回结果的基类/父类
  */
+
+@AllArgsConstructor
+@NoArgsConstructor
 public class BaseResult {
     // 0 失败 1 成功
     private Integer code;
     // 失败原因  或者  成功的说明
-    private String msg;
+
     // 数据
-    private Object data;
-
-    public BaseResult() {
-    }
-
-    public BaseResult(Integer code, String msg) {
-        this.code = code;
-        this.msg = msg;
-    }
-
-    public BaseResult(Integer code, String msg, Object data) {
-        this.code = code;
-        this.msg = msg;
-        this.data = data;
-    }
+    private boolean success;
+    private Data data;
 
     public Integer getCode() {
         return code;
@@ -34,19 +27,28 @@ public class BaseResult {
         this.code = code;
     }
 
-    public String getMsg() {
-        return msg;
+    public boolean isSuccess() {
+        return success;
     }
 
-    public void setMsg(String msg) {
-        this.msg = msg;
+    public void setSuccess(boolean success) {
+        this.success = success;
     }
 
-    public Object getData() {
+    public Data getData() {
         return data;
     }
 
-    public void setData(Object data) {
+    public void setData(Data data) {
         this.data = data;
+    }
+
+    @Override
+    public String toString() {
+        return "BaseResult{" +
+                "code=" + code +
+                ", success=" + success +
+                ", data=" + data +
+                '}';
     }
 }

@@ -18,7 +18,7 @@ public class ServiceTags {
 
         return tags;
     }
-     public Tags findId(Integer tid){
+     public Tags findId(String tid){
        return mapperTags.selectByPrimaryKey(tid);
      }
 }

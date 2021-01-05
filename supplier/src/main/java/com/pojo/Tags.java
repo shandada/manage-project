@@ -14,7 +14,7 @@ import javax.persistence.Table;
 public class Tags {
   @Id
   @Column(name = "tid")
-  private Integer tid;
+  private String tid;
   @Column(name = "tname")
   private String tname;
 }

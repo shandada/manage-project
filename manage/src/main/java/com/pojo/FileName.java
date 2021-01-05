@@ -31,17 +31,23 @@ public class FileName {
     @Id
     private static final long serialVersionUID = 1L;
     @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    private String id;
 
     /**
      * 文件id
      */
-    private Integer handleId;
+    private String handleId;
 
     /**
      * 文件名称
      */
     private String handleName;
+
+
+    /**
+     * 文件大小
+     */
+    private String size;
 
     /**
      * 文件ip
@@ -50,7 +56,7 @@ public class FileName {
     /**
      * 文件版本号
      */
-    private Integer vid;
+    private String vid;
     /**
      * 类型
      */

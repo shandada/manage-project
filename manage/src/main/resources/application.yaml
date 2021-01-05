@@ -1,11 +1,13 @@
 server:
   port: 8089   #端口号
+  servlet:
+    context-path: /aip
 spring:
 
   datasource:      #连接数据库配置
     url: jdbc:mysql://localhost:3306/file_management?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
     username: root
-    password: root
+    password: 147
     driver-class-name: com.mysql.jdbc.Driver
   servlet:       #    文件上传配置  文件大小 MB必须大写
     multipart:

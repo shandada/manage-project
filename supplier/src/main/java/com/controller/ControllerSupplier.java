@@ -9,7 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-
+/**
+ * @Auther: 杨爽
+ */
 @RestController
 @RequestMapping("/supplier")
 public class ControllerSupplier {
@@ -22,16 +24,18 @@ public class ControllerSupplier {
     public ResponseEntity<PageResult>findAll(PageRequest pageRequest){
 
         PageResult all = serviceSupplier.findAll(pageRequest);
-
+//        BaseResult baseResult = new BaseResult();
         return ResponseEntity.ok(all);
     }
+
     //创建
     @PostMapping("/add")
     public ResponseEntity<BaseResult>add(@RequestBody Supplier supplier){
 
         serviceSupplier.add(supplier);
 
-        BaseResult result = new BaseResult(1, "创建成功");
+        BaseResult result = new BaseResult(200, true,null);
+
 
         return ResponseEntity.ok(result);
     }
@@ -40,17 +44,17 @@ public class ControllerSupplier {
     public ResponseEntity<BaseResult>update(@RequestBody Supplier supplier){
         serviceSupplier.update(supplier);
 
-        BaseResult result = new BaseResult(1, "更新成功");
+        BaseResult result = new BaseResult(200, true,null);
+
 
         return ResponseEntity.ok(result);
     }
     //删除
     @DeleteMapping("/{gid}")
-    public ResponseEntity<BaseResult>delete(@PathVariable("gid") Integer gid){
+    public ResponseEntity<BaseResult>delete(@PathVariable("gid") String gid){
         serviceSupplier.delete(gid);
 
-        BaseResult result = new BaseResult(1, "删除成功");
-
+        BaseResult result = new BaseResult(200, true,null);
         return ResponseEntity.ok(result);
     }
     //批量删除
@@ -61,7 +65,7 @@ public class ControllerSupplier {
 
          serviceSupplier.deleteP(split);
 
-        BaseResult result = new BaseResult(1, "批量删除成功");
+        BaseResult result = new BaseResult(200, true,null);
 
         return ResponseEntity.ok(result);
     }

@@ -1,28 +1,30 @@
 package com.service;
 
-import com.mapper.MapperManage;
-import com.pojo.Manage;
+import com.mapper.MapperFileName;
+import com.pojo.FileName;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
 
 @Service
+@Transactional
 public class ServiceManage {
 
     @Resource
-    private MapperManage mapperManage;
+    private MapperFileName mapperFileName;
 
 
-    public List<Manage> findAll(){
+    public List<FileName> findAll(){
 
-        List<Manage> manages = mapperManage.selectAll();
+        List<FileName> manages = mapperFileName.selectAll();
 
         return manages;
     }
-    public Manage findId(Integer id ){
+    public FileName findId(String id ){
 
-        return mapperManage.selectByPrimaryKey(id);
+        return mapperFileName.selectByPrimaryKey(id);
     }
 
 }

@@ -1,46 +1,20 @@
 package com.common;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /**
  * 工具类
  */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class PageRequest {
     // 页码
-    private Integer page;
+    private Integer pageNo;
     // 每页条数
-    private Integer rows;
-
+    private Integer pageSize;
     private String key;
 
-    public Integer getPage() {
-        return page;
-    }
-
-    public void setPage(Integer page) {
-        this.page = page;
-    }
-
-    public Integer getRows() {
-        return rows;
-    }
-
-    public void setRows(Integer rows) {
-        this.rows = rows;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    @Override
-    public String toString() {
-        return "PageRequest{" +
-                "page=" + page +
-                ", rows=" + rows +
-                ", key='" + key + '\'' +
-                '}';
-    }
 }

@@ -8,10 +8,12 @@ import com.mapper.VersionsMapper;
 import com.pojo.FileName;
 import com.pojo.Versions;
 import com.util.FileUtil;
+import com.vo.OneChapter;
 import com.vo.Result;
+import com.vo.TwoFile;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ceph.MyCeph;
-import com.ceph.utils.CephUtils;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.annotation.Resource;
@@ -21,12 +23,14 @@ import javax.servlet.http.HttpSession;
 
 import com.mapper.FileNameMapper;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -55,24 +59,62 @@ public class FileNameService extends ServiceImpl<FileNameMapper, FileName> {
     @Resource
     private VersionsMapper versionsMapper;
 
-    //QueryWrapper 查询所有,并关联查询版本号
-    public List<FileName> findAll() {
-        QueryWrapper<FileName> wrapper = new QueryWrapper<>();
-        //拿到所有文件
-        List<FileName> list = fileNameMapper.selectList(wrapper);
-        //遍历文件
-        for (FileName fileName : list) {
-            //根据文件版本号id,查询所有版本号
-            fileName.setVersions(versionsMapper.selectById(fileName.getVid()));
+
+    @Resource
+    private FileNameService fileNameService;
+
+    public List<OneChapter> queryChapterAndVideoList() {
+
+        //定义一个目录集合
+        List<OneChapter> oneChapterList = new ArrayList<>();
+        //先查询目录列表集合
+        QueryWrapper<FileName> wr = new QueryWrapper<>();
+        List<FileName> fileNames = baseMapper.selectList(wr);
+        for (FileName fileName : fileNames) {
+            String handleId = fileName.getHandleId();
+            System.out.println("handleId: " + handleId);
+            String id = fileName.getId();
+            if (fileName.getHandleId().equals(fileName.getVid())) {
+                wr.eq("vid", handleId);
+            }
         }
-        return list;
+        //再遍历章节集合，获取每个节点ID(版本号)
+        for (FileName eduChapter : fileNames) {
+            OneChapter oneChapter = new OneChapter();
+            BeanUtils.copyProperties(eduChapter, oneChapter);
+            //再根据每个目录的ID查询节点的列表
+            QueryWrapper<FileName> videoWrapper = new QueryWrapper<>();
+            videoWrapper.eq("vid", oneChapter.getId());
+            List<FileName> eduVideoList = fileNameService.list(videoWrapper);
+            //把小节的列表添加目录中
+            for (FileName eduVideo : eduVideoList) {
+                TwoFile twoVideo = new TwoFile();
+                BeanUtils.copyProperties(eduVideo, twoVideo);
+                oneChapter.getChildren().add(twoVideo);
+            }
+            oneChapterList.add(oneChapter);
+        }
+        return oneChapterList;
     }
+
+    //QueryWrapper 查询所有,并关联查询版本号
+//    public List<FileName> findAll() {
+//        QueryWrapper<FileName> wrapper = new QueryWrapper<>();
+//        //拿到所有文件
+//        List<FileName> list = fileNameMapper.selectList(wrapper);
+//        //遍历文件
+//        for (FileName fileName : list) {
+//            //根据文件版本号id,查询所有版本号
+//            fileName.setVersions(versionsMapper.selectById(fileName.getVid()));
+//        }
+//        return list;
+//    }
 
 
     /**
      * 根据id单个文件夹删除
      */
-    public void del(Integer id) {
+    public void del(String id) {
 
 
         //调用baseMapper 删除方法
@@ -89,14 +131,14 @@ public class FileNameService extends ServiceImpl<FileNameMapper, FileName> {
         //遍历字符串,
         for (String id : ids) {
             //转换integer类型
-            int i = Integer.parseInt(id);
+//            int i = Integer.parseInt(id);
             //调用单个删除方法
-            del(i);
+            del(id);
         }
     }
 
     //文件id查询
-    public List<FileName> findAID(Integer handleId) {
+    public List<FileName> findAID(String handleId) {
         QueryWrapper<FileName> wrapper = new QueryWrapper<>();
         wrapper.eq("handle_id", handleId);
         return baseMapper.selectList(wrapper);
@@ -153,7 +195,7 @@ public class FileNameService extends ServiceImpl<FileNameMapper, FileName> {
      * @param response
      * @throws Exception
      */
-    public Result download(HttpServletResponse response, Integer handleId) throws Exception {
+    public Result download(HttpServletResponse response, String handleId) throws Exception {
 
         //根据id获取服务器文件url
         FileName fileName1 = fileNameMapper.selectById(handleId);

@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.List;
-
+/**
+ * @Auther: 杨爽
+ */
 @RestController
 @RequestMapping("/tags")
 public class ControllerTags {
@@ -24,17 +26,17 @@ public class ControllerTags {
 
         List<Tags> all = serviceTags.findAll();
 
-        BaseResult result = new BaseResult(1, "查询成功", all);
+        BaseResult result = new BaseResult(200, true,null);
 
         return ResponseEntity.ok(result);
     }
 
     @GetMapping("/{tid}")
-    public ResponseEntity<BaseResult> findId(@PathVariable("tid") Integer tid) {
+    public ResponseEntity<BaseResult> findId(@PathVariable("tid") String tid) {
 
         Tags tagsId = serviceTags.findId(tid);
 
-        BaseResult result = new BaseResult(1, "根据ID查询成功", tagsId);
+        BaseResult result = new BaseResult(200, true,null);
 
         return ResponseEntity.ok(result);
     }

@@ -1,37 +1,26 @@
 package com.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.ceph.MyCeph;
-import com.ceph.utils.CephUtils;
 import com.pojo.*;
 import com.pojo.FileName;
 import com.service.FileNameService;
-import com.service.ManagerService;
 import com.service.SupplierService;
 import com.service.VersionsService;
-import com.util.FileUtil;
+import com.vo.OneChapter;
 import com.vo.Result;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.activation.MimetypesFileTypeMap;
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @Description:
- * @Auther: logo丶西亚卡姆
+ * @Auther: 单朋坤
  * @Date: 2020/12/29 17:32
  */
 //文件controller
@@ -48,9 +37,6 @@ public class FileNameController {
     //注入session
     @Resource
     private HttpSession session;
-    //注入文件夹service
-    @Resource
-    private ManagerService managerService;
     //注入供应商service
     @Resource
     private SupplierService supplierService;
@@ -60,6 +46,20 @@ public class FileNameController {
     //版本号注入
     @Resource
     private VersionsService versionsService;
+
+
+    /**
+     * 树状列表
+     * @return
+     */
+    @GetMapping("/treeAll")
+    public Result getChapterList(){
+        List<OneChapter> list = fileNameService.queryChapterAndVideoList();
+//        if(list.size()>=0){
+        return Result.ok().result("list",list);
+//        }
+//        return Result.error();
+    }
 
     /**
      * 查询所有
@@ -71,7 +71,8 @@ public class FileNameController {
     public Result findAll() {
         try {
             //获取所有数据
-            List<FileName> list = fileNameService.findAll();
+            List<FileName> list = fileNameService.list(null);
+            System.out.println(list);
             //成功,返回数据
             return Result.ok().result("list", list);
         } catch (Exception e) {
@@ -128,7 +129,7 @@ public class FileNameController {
             //添加版本号,判断接收的版本号是否为空 不为空则执行if
             if (fileName.getVersionsIDs() != null) {
                 //获取版本号id
-                Integer vid = fileName.getVid();
+                String vid = fileName.getVid();
                 // 获取版本号字符串
                 String[] versions = fileName.getVersionsIDs().split(",");
                 // 遍历版本号
@@ -168,7 +169,7 @@ public class FileNameController {
             //判断接收的版本号是否为空 不为空则执行if
             if (fileName.getVersionsIDs() != null) {
                 //获取版本号id
-                Integer vid = fileName.getVid();
+                String vid = fileName.getVid();
                 // 获取版本号字符串
                 String[] versions = fileName.getVersionsIDs().split(",");
                 //根据先版本号vid 删除之前的版本号信息
@@ -197,17 +198,18 @@ public class FileNameController {
      * @return
      */
     @DeleteMapping("/delete/{id}")
-    public Result delete(@PathVariable("id") Integer id) {
+    public Result delete(@PathVariable("id") String id) {
         //**先删除版本号信息
         //先获取版本号 vid  删除版本号
         FileName byId = fileNameService.getById(id);
-        Integer vid = byId.getVid();
+        String vid = byId.getVid();
         // 版本号删除
         //根据版本号vid 删除版本号信息
         QueryWrapper<Versions> wrapper = new QueryWrapper<>();
         //ID查询
         wrapper.eq("vid", vid);
-        //删除
+
+        //删除文件
         versionsService.remove(wrapper);
 
         //根据id删除文件
@@ -237,12 +239,12 @@ public class FileNameController {
             String[] split = ids.split(",");
             for (String thiId : split) {
                 //转换integer类型
-                int id = Integer.parseInt(thiId);
-                System.out.println(id);
+//                int id = Integer.parseInt(thiId);
+//                System.out.println(id);
                 //**删除版本号信息
                 //获取版本号 vid  删除版本号
-                FileName byId = fileNameService.getById(id);
-                Integer vid = byId.getVid();
+                FileName byId = fileNameService.getById(thiId);
+                String vid = byId.getVid();
                 // 版本号删除
                 //根据版本号vid 删除版本号信息
                 QueryWrapper<Versions> wrapper = new QueryWrapper<>();
@@ -279,7 +281,7 @@ public class FileNameController {
      * @throws Exception
      */
     @GetMapping("/download/{handleId}")
-    public Result download(HttpServletResponse response, @PathVariable("handleId") Integer handleId) throws Exception {
+    public Result download(HttpServletResponse response, @PathVariable("handleId") String handleId) throws Exception {
         return fileNameService.download(response, handleId);
     }
 

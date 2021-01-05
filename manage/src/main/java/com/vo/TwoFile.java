@@ -1,52 +1,44 @@
-package com.pojo;
+package com.vo;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
+//第二级目录
+
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-//文件夹实体类
-public class Manage {
+public class TwoFile {
 
     /**
-     * 自增id
-     */
-    private static final long serialVersionUID = 1L;
-    @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
-
-    /**
-     * 文件夹id
+     * 文件id
      */
     private String handleId;
 
     /**
-     * 文件夹名称
+     * 文件名称
      */
-    private String folordName;
-    /**
-     * 文件夹大小
-     */
-    private Double size;
+    private String handleName;
 
     /**
-     * 供应商id
+     * 文件ip
      */
-    private Integer gid;
-
+    private String handleIp;
     /**
-     * 创建时间
+     * 文件大小
      */
+    private String size;
+    /**
+     * 文件版本号
+     */
+    private String vid;
+    /**
+     * 类型
+     */
+    private String type;
     @TableField(value = "create_time", fill = FieldFill.INSERT)
     @JsonFormat(pattern = "yyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyy-MM-dd")
@@ -60,6 +52,4 @@ public class Manage {
     @DateTimeFormat(pattern = "yyy-MM-dd")
     private Date updateTime;
 
-    @TableField(exist = false)
-    private Supplier supplier;
 }

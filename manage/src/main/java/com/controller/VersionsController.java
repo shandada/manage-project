@@ -2,7 +2,6 @@ package com.controller;
 
 import com.pojo.Versions;
 import com.service.FileNameService;
-import com.service.ManagerService;
 import com.service.SupplierService;
 import com.service.VersionsService;
 import com.vo.Result;
@@ -13,15 +12,13 @@ import java.util.List;
 
 /**
  * @Description: 版本号controller
- * @Auther: logo丶西亚卡姆
+ * @Auther: 单朋坤
  * @Date: 2020/12/29 17:58
  */
 @RestController
 @RequestMapping("/versions")
 public class VersionsController {
-    //注入文件夹service
-    @Resource
-    private ManagerService managerService;
+
     //注入供应商service
     @Resource
     private SupplierService supplierService;
@@ -56,7 +53,7 @@ public class VersionsController {
      * @return
      */
     @GetMapping("/{vid}")
-    public Result findVersionID(@PathVariable("vid") Integer vid) {
+    public Result findVersionID(@PathVariable("vid") String vid) {
         try {
             //根据versionId 调用findVersionID方法 获取数据
             List<Versions> versions = versionsService.findVersionID(vid);

@@ -28,7 +28,18 @@
 
     <dependencies>
 
-
+        <!-- 引入Druid依赖，阿里巴巴所提供的数据源 -->
+        <!--        swagger-ui -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.8.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.8.0</version>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -48,6 +59,7 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.38</version>
         </dependency>
+
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -114,8 +126,8 @@
             <version>3.5.4</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-commons</artifactId>
+            <groupId>org.springframework.resultData</groupId>
+            <artifactId>spring-resultData-commons</artifactId>
             <version>2.2.3.RELEASE</version>
         </dependency>
         <dependency>

@@ -26,8 +26,8 @@ public class Versions {
      */
     @Id
     @GeneratedValue(generator = "JDBC")
-//    @TableId(value = "vid", type = IdType.AUTO)
-    private Integer vid;
+    @TableId(value = "vid", type = IdType.AUTO)
+    private String vid;
 
     /**
      * 版本号

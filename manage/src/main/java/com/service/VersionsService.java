@@ -21,7 +21,7 @@ import java.util.List;
 public class VersionsService extends ServiceImpl<VersionsMapper,Versions> {
 
 
-    public List<Versions> findVersionID(Integer vid) {
+    public List<Versions> findVersionID(String vid) {
         // QueryWrapper 根据vid 查询版本号数据
         QueryWrapper<Versions> wrapper = new QueryWrapper<>();
         wrapper.eq("vid",vid);
