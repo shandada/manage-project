@@ -4,11 +4,12 @@ package com.pojo;
 import javax.persistence.*;
 import java.sql.Timestamp;
 
-@Table(name = "supplier")
+@Table(name = "t_supplier")
 public class Supplier {
     @Id
     @Column(name = "gid")
     private String gid;
+    //表name
     private String name;
 
     //客户名称
@@ -19,7 +20,7 @@ public class Supplier {
     private String customPhone;
 
     //状态，1在状态，0不在
-    @Column(name = "custom_phone")
+    @Column(name = "state")
     private String state;
 
     @Column(name = "create_time")

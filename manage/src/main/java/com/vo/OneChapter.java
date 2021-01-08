@@ -13,36 +13,11 @@ import java.util.List;
 @NoArgsConstructor
 public class OneChapter {
 
-    private String id;
+    //id
 
-    private String title;
-
-
+    private String supplierId;
+    //供应商
+    private String supplierName;
 
     private List<TwoFile> children = new ArrayList<>();
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        this.setTitle("目录: ");
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public List<TwoFile> getChildren() {
-        return children;
-    }
-
-    public void setChildren(List<TwoFile> children) {
-        this.children = children;
-    }
 }

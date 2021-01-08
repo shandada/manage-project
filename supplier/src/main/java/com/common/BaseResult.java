@@ -4,12 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 /**
-
  * 返回结果的基类/父类
  */
 
 @AllArgsConstructor
-@NoArgsConstructor
 public class BaseResult {
     // 0 失败 1 成功
     private Integer code;
@@ -21,6 +19,25 @@ public class BaseResult {
 
     public Integer getCode() {
         return code;
+    }
+
+    public BaseResult() {
+    }
+
+    ;
+
+    //调用成功方法
+    public void ok() {
+//        BaseResult r = new BaseResult();//调用自己私有构造方法
+        setSuccess(true);
+        setCode(ResultCode.OK);
+    }
+
+    //失败调用方法
+    public void  error() {
+     setSuccess(false);
+       setCode(ResultCode.ERROR);
+
     }
 
     public void setCode(Integer code) {
