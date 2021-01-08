@@ -10,9 +10,9 @@ public class SupplierApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(SupplierApplication.class, args);
-        System.out.println("2. supplier启动成功 ! ! !");
-        System.out.println("2. supplier启动成功 ! ! !");
-        System.out.println("2. supplier启动成功 ! ! !");
+        System.out.println(" supplier启动成功 ! ! !");
+        System.out.println(" supplier启动成功 ! ! !");
+        System.out.println(" supplier启动成功 ! ! !");
     }
 
 }
